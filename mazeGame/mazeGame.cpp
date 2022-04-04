@@ -10,8 +10,27 @@ using namespace std;
 3 : end point
 */
 
-void SetMaze(char Maze[21][21])
+struct _tagPoint
 {
+	int x;
+	int y;
+};
+
+// typedef : redefine the type
+typedef _tagPoint POINT;
+typedef _tagPoint* PPOINT;
+
+void SetMaze(char Maze[21][21], PPOINT pPlayerPos, PPOINT pStartPos,
+	PPOINT pEndPos)
+{
+	pStartPos->x = 0;
+	pStartPos->y = 0;
+
+	pEndPos->x = 19;
+	pEndPos->y = 19;
+
+	*pPlayerPos = *pStartPos;
+
 	strcpy_s(Maze[0],  "21100000000000000000");
 	strcpy_s(Maze[1],  "00111111111100000000");
 	strcpy_s(Maze[2],  "00100010000111111100");
@@ -37,13 +56,16 @@ void SetMaze(char Maze[21][21])
 	};
 }
 
-void Output(char Maze[21][21])
+void Output(char Maze[21][21], PPOINT pPlayerPos)
 {
 	for (int i = 0; i < 20; ++i)
 	{
 		for (int j = 0; j < 20; ++j)
 		{
-			if (Maze[i][j] == '0')
+			if (pPlayerPos->x == j && pPlayerPos->y == i)
+				cout << "☆";
+
+			else if (Maze[i][j] == '0')
 				cout << "■";
 
 			else if (Maze[i][j] == '1')
@@ -64,15 +86,19 @@ int main()
 {
 	// 20 X 20 maze
 	char strMaze[21][21];
+
+	POINT tPlayerPos;
+	POINT tStartPos;
+	POINT tEndPos;
 	
 	// maze setting
-	SetMaze(strMaze);
+	SetMaze(strMaze, &tPlayerPos, &tStartPos, &tEndPos);
 
 	while (true)
 	{
 		system("cls");
 		// maze output
-		Output(strMaze);
+		Output(strMaze, &tPlayerPos);
 		cout << "w : up, s : down, a : left, d : right, q : quit ";
 		char cInput = _getch();
 
