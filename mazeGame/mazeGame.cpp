@@ -171,6 +171,12 @@ int main()
 		system("cls");
 		// maze output
 		Output(strMaze, &tPlayerPos);
+
+		if (tPlayerPos.x == tEndPos.x && tPlayerPos.y == tEndPos.y)
+		{
+			cout << "Arrived" << endl;
+			break;
+		}
 		cout << "w : up, s : down, a : left, d : right, q : quit ";
 		char cInput = _getch();
 
