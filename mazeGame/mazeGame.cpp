@@ -8,6 +8,8 @@ using namespace std;
 1 : way
 2 : starting point
 3 : end point
+4 : bomb
+5 : bomb effect 
 */
 
 struct _tagPoint
@@ -62,7 +64,10 @@ void Output(char Maze[21][21], PPOINT pPlayerPos)
 	{
 		for (int j = 0; j < 20; ++j)
 		{
-			if (pPlayerPos->x == j && pPlayerPos->y == i)
+			if (Maze[i][j] == '4')
+				cout << "♨";
+
+			else if (pPlayerPos->x == j && pPlayerPos->y == i)
 				cout << "☆";
 
 			else if (Maze[i][j] == '0')
@@ -177,13 +182,21 @@ int main()
 			cout << "Arrived" << endl;
 			break;
 		}
+
+		cout << "t : set bomb, u : bomb attak" << endl;
 		cout << "w : up, s : down, a : left, d : right, q : quit ";
 		char cInput = _getch();
 
 		if (cInput == 'q' || cInput == 'Q')
 			break;
 
-		MovePlyaer(strMaze, &tPlayerPos, cInput);
+		else if (cInput == 't' || cInput == 'T')
+		{
+			strMaze[tPlayerPos.y][tPlayerPos.x] = '4';
+		}
+
+		else
+			MovePlyaer(strMaze, &tPlayerPos, cInput);
 	}
 
 	return 0;
