@@ -163,6 +163,25 @@ void MovePlyaer(char Maze[21][21], PPOINT pPlayerPos, char cInput)
 	}
 }
 
+void CreateBomb(char Maze[21][21], const PPOINT pPlayer,
+	PPOINT pBombArr, int* pBombCount)
+{
+	if (*pBombCount == 5)
+		return;
+	
+	for (int i = 0; i < *pBombCount; ++i)
+	{
+		if (pPlayer->x == pBombArr[i].x &&
+			pPlayer->y == pBombArr[i].y)
+			return;
+	}
+
+	pBombArr[*pBombCount] = *pPlayer;
+	++(*pBombCount);
+
+	Maze[pPlayer->y][pPlayer->x] = '4';
+}
+
 int main()
 {
 	// 20 X 20 maze
@@ -172,6 +191,10 @@ int main()
 	POINT tStartPos;
 	POINT tEndPos;
 	
+	int iBombCount = 0; 
+
+	POINT tBombPos[5];
+
 	// maze setting
 	SetMaze(strMaze, &tPlayerPos, &tStartPos, &tEndPos);
 
@@ -195,8 +218,11 @@ int main()
 			break;
 
 		else if (cInput == 't' || cInput == 'T')
+			CreateBomb(strMaze, &tPlayerPos, tBombPos, &iBombCount);
+
+		else if (cInput == 'u' || cInput == 'U')
 		{
-			strMaze[tPlayerPos.y][tPlayerPos.x] = '4';
+		
 		}
 
 		else
