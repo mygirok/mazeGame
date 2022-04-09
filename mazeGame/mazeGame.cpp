@@ -187,6 +187,8 @@ void Fire(char Maze[21][21], PPOINT pPlayer, PPOINT pBombArr,
 {
 	for (int i = 0; i < *pBombCount; ++i)
 	{
+		Maze[pBombArr[i].y][pBombArr[i].x] = '1';
+
 		// Move player to start point if hit by bomb
 		if (pPlayer->x == pBombArr[i].x && pPlayer->y == pBombArr[i].y)
 		{
