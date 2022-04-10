@@ -22,7 +22,15 @@ struct _tagPoint
 typedef _tagPoint POINT;
 typedef _tagPoint* PPOINT;
 
-void SetMaze(char Maze[21][21], PPOINT pPlayerPos, PPOINT pStartPos,
+typedef struct _tagPlayer
+{
+	_tagPoint	tPos;
+	bool		bWallPush;
+	bool		bTransparency;
+	int			iBombPower;
+}PLAYER, *PPLAYER;
+
+void SetMaze(char Maze[21][21], PPLAYER pPlayer, PPOINT pStartPos,
 	PPOINT pEndPos)
 {
 	pStartPos->x = 0;
@@ -31,7 +39,7 @@ void SetMaze(char Maze[21][21], PPOINT pPlayerPos, PPOINT pStartPos,
 	pEndPos->x = 19;
 	pEndPos->y = 19;
 
-	*pPlayerPos = *pStartPos;
+	pPlayer->tPos = *pStartPos;
 
 	strcpy_s(Maze[0],  "21100000000000000000");
 	strcpy_s(Maze[1],  "00111111111100000000");
@@ -58,7 +66,7 @@ void SetMaze(char Maze[21][21], PPOINT pPlayerPos, PPOINT pStartPos,
 	};
 }
 
-void Output(char Maze[21][21], PPOINT pPlayerPos)
+void Output(char Maze[21][21], PPLAYER pPlayer)
 {
 	for (int i = 0; i < 20; ++i)
 	{
@@ -67,7 +75,7 @@ void Output(char Maze[21][21], PPOINT pPlayerPos)
 			if (Maze[i][j] == '4')
 				cout << "♨";
 
-			else if (pPlayerPos->x == j && pPlayerPos->y == i)
+			else if (pPlayer->tPos.x == j && pPlayer->tPos.y == i)
 				cout << "☆";
 
 			else if (Maze[i][j] == '0')
@@ -85,80 +93,95 @@ void Output(char Maze[21][21], PPOINT pPlayerPos)
 
 		cout << endl;
 	}
+
+	cout << "Bomb power : " << pPlayer->iBombPower << endl;
+	cout << "Pass wall : ";
+	if (pPlayer->bTransparency)
+		cout << "ON\t";
+
+	else
+		cout << "OFF\t";
+
+	cout << "Push wall : ";
+	if (pPlayer->bWallPush)
+		cout << "ON" << endl;
+
+	else
+		cout << "OFF" << endl;
 }
 
-void MoveUp(char Maze[21][21], PPOINT pPlayerPos)
+void MoveUp(char Maze[21][21], PPLAYER pPlayer)
 {
-	if (pPlayerPos->y - 1 >= 0)
+	if (pPlayer->tPos.y - 1 >= 0)
 	{
 		// check wall
-		if (Maze[pPlayerPos->y - 1][pPlayerPos->x] != '0' &&
-			Maze[pPlayerPos->y - 1][pPlayerPos->x] != '4')
+		if (Maze[pPlayer->tPos.y - 1][pPlayer->tPos.x] != '0' &&
+			Maze[pPlayer->tPos.y - 1][pPlayer->tPos.x] != '4')
 		{
-			--pPlayerPos->y;
+			--pPlayer->tPos.y;
 		}
 	}
 }
 
-void MoveDown(char Maze[21][21], PPOINT pPlayerPos)
+void MoveDown(char Maze[21][21], PPLAYER pPlayer)
 {
-	if (pPlayerPos->y + 1 < 20)
+	if (pPlayer->tPos.y + 1 < 20)
 	{
 		// check wall
-		if (Maze[pPlayerPos->y + 1][pPlayerPos->x] != '0' &&
-			Maze[pPlayerPos->y + 1][pPlayerPos->x] != '4')
+		if (Maze[pPlayer->tPos.y + 1][pPlayer->tPos.x] != '0' &&
+			Maze[pPlayer->tPos.y + 1][pPlayer->tPos.x] != '4')
 		{
-			++pPlayerPos->y;
+			++pPlayer->tPos.y;
 		}
 	}
 }
 
-void MoveRight(char Maze[21][21], PPOINT pPlayerPos)
+void MoveRight(char Maze[21][21], PPLAYER pPlayer)
 {
-	if (pPlayerPos->x + 1 < 20)
+	if (pPlayer->tPos.x + 1 < 20)
 	{
 		// check wall
-		if (Maze[pPlayerPos->y][pPlayerPos->x + 1] != '0' &&
-			Maze[pPlayerPos->y][pPlayerPos->x + 1] != '4')
+		if (Maze[pPlayer->tPos.y][pPlayer->tPos.x + 1] != '0' &&
+			Maze[pPlayer->tPos.y][pPlayer->tPos.x + 1] != '4')
 		{
-			++pPlayerPos->x;
+			++pPlayer->tPos.x;
 		}
 	}
 }
 
-void MoveLeft(char Maze[21][21], PPOINT pPlayerPos)
+void MoveLeft(char Maze[21][21], PPLAYER pPlayer)
 {
-	if (pPlayerPos->x - 1 < 20)
+	if (pPlayer->tPos.x - 1 < 20)
 	{
 		// check wall
-		if (Maze[pPlayerPos->y][pPlayerPos->x - 1] != '0' &&
-			Maze[pPlayerPos->y][pPlayerPos->x - 1] != '4')
+		if (Maze[pPlayer->tPos.y][pPlayer->tPos.x - 1] != '0' &&
+			Maze[pPlayer->tPos.y][pPlayer->tPos.x - 1] != '4')
 		{
-			--pPlayerPos->x;
+			--pPlayer->tPos.x;
 		}
 	}
 }
 
 
-void MovePlyaer(char Maze[21][21], PPOINT pPlayerPos, char cInput)
+void MovePlayer(char Maze[21][21], PPLAYER pPlayer, char cInput)
 {
 	switch (cInput)
 	{
 	case 'w':
 	case 'W':
-		MoveUp(Maze, pPlayerPos);
+		MoveUp(Maze, pPlayer);
 		break;
 	case 's':
 	case 'S':
-		MoveDown(Maze, pPlayerPos);
+		MoveDown(Maze, pPlayer);
 		break;
 	case 'a':
 	case 'A':
-		MoveLeft(Maze, pPlayerPos);
+		MoveLeft(Maze, pPlayer);
 		break;
 	case 'd':
 	case 'D':
-		MoveRight(Maze, pPlayerPos);
+		MoveRight(Maze, pPlayer);
 		break;
 	}
 }
@@ -256,30 +279,32 @@ int main()
 	// 20 X 20 maze
 	char strMaze[21][21];
 
-	POINT tPlayerPos;
-	POINT tStartPos;
-	POINT tEndPos;
+	PLAYER tPlayer = {};
+	POINT  tStartPos;
+	POINT  tEndPos;
 	
+	tPlayer.iBombPower = 1;
+
 	int iBombCount = 0; 
 
 	POINT tBombPos[5];
 
 	// maze setting
-	SetMaze(strMaze, &tPlayerPos, &tStartPos, &tEndPos);
+	SetMaze(strMaze, &tPlayer, &tStartPos, &tEndPos);
 
 	while (true)
 	{
 		system("cls");
 		// maze output
-		Output(strMaze, &tPlayerPos);
+		Output(strMaze, &tPlayer);
 
-		if (tPlayerPos.x == tEndPos.x && tPlayerPos.y == tEndPos.y)
+		if (tPlayer.tPos.x == tEndPos.x && tPlayer.tPos.y == tEndPos.y)
 		{
 			cout << "Arrived" << endl;
 			break;
 		}
 
-		cout << "t : set bomb, u : bomb attak" << endl;
+		cout << "t : set bomb, u : bomb attak, i : push wall" << endl;
 		cout << "w : up, s : down, a : left, d : right, q : quit ";
 		char cInput = _getch();
 
@@ -287,15 +312,15 @@ int main()
 			break;
 
 		else if (cInput == 't' || cInput == 'T')
-			CreateBomb(strMaze, &tPlayerPos, tBombPos, &iBombCount);
+			CreateBomb(strMaze, &tPlayer, tBombPos, &iBombCount);
 
 		else if (cInput == 'u' || cInput == 'U')
 		{
-			Fire(strMaze, &tPlayerPos, tBombPos, &iBombCount);
+			Fire(strMaze, &tPlayer, tBombPos, &iBombCount);
 		}
 
 		else
-			MovePlyaer(strMaze, &tPlayerPos, cInput);
+			MovePlayer(strMaze, &tPlayer, cInput);
 	}
 
 	return 0;
