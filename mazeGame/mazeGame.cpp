@@ -9,7 +9,10 @@ using namespace std;
 2 : starting point
 3 : end point
 4 : bomb
-5 : bomb effect 
+5 :	power item 
+6 : push wall
+7 : transparent item
+8 : wormhole
 */
 
 struct _tagPoint
@@ -110,16 +113,46 @@ void Output(char Maze[21][21], PPLAYER pPlayer)
 		cout << "OFF" << endl;
 }
 
+bool AddItem(char cItemType, PPLAYER pPlayer)
+{
+	if (cItemType == '5')
+	{
+		++pPlayer->iBombPower;
+		return true;
+	}
+
+	else if (cItemType == '6')
+	{
+		++pPlayer->bWallPush = true;
+		return true;
+	}
+
+	else if (cItemType == '7')
+	{
+		++pPlayer->bTransparency = true;
+		return true;
+	}
+
+	return false;
+}
+
 void MoveUp(char Maze[21][21], PPLAYER pPlayer)
 {
 	if (pPlayer->tPos.y - 1 >= 0)
-	{
+	{ 
 		// check wall
 		if (Maze[pPlayer->tPos.y - 1][pPlayer->tPos.x] != '0' &&
 			Maze[pPlayer->tPos.y - 1][pPlayer->tPos.x] != '4')
 		{
 			--pPlayer->tPos.y;
 		}
+
+		else if (pPlayer->bTransparency)
+			--pPlayer->tPos.y;
+
+		if (AddItem(Maze[pPlayer->tPos.y][pPlayer->tPos.x], pPlayer))
+			Maze[pPlayer->tPos.y][pPlayer->tPos.x] = 1;
+
 	}
 }
 
@@ -133,6 +166,12 @@ void MoveDown(char Maze[21][21], PPLAYER pPlayer)
 		{
 			++pPlayer->tPos.y;
 		}
+
+		else if (pPlayer->bTransparency)
+			++pPlayer->tPos.y;
+
+		if (AddItem(Maze[pPlayer->tPos.y][pPlayer->tPos.x], pPlayer))
+			Maze[pPlayer->tPos.y][pPlayer->tPos.x] = 1;
 	}
 }
 
@@ -146,6 +185,12 @@ void MoveRight(char Maze[21][21], PPLAYER pPlayer)
 		{
 			++pPlayer->tPos.x;
 		}
+
+		else if (pPlayer->bTransparency)
+			++pPlayer->tPos.x;
+
+		if (AddItem(Maze[pPlayer->tPos.y][pPlayer->tPos.x], pPlayer))
+			Maze[pPlayer->tPos.y][pPlayer->tPos.x] = 1;
 	}
 }
 
@@ -159,6 +204,12 @@ void MoveLeft(char Maze[21][21], PPLAYER pPlayer)
 		{
 			--pPlayer->tPos.x;
 		}
+
+		else if (pPlayer->bTransparency)
+			--pPlayer->tPos.x;
+
+		if (AddItem(Maze[pPlayer->tPos.y][pPlayer->tPos.x], pPlayer))
+			Maze[pPlayer->tPos.y][pPlayer->tPos.x] = 1;
 	}
 }
 
