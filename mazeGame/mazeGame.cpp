@@ -274,55 +274,59 @@ void Fire(char Maze[21][21], PPLAYER pPlayer, PPOINT pBombArr,
 			pPlayer->tPos.x = 0;
 			pPlayer->tPos.y = 0;
 		}
-		if (pBombArr[i].y - 1 >= 0)
-		{
-			if (Maze[pBombArr[i].y - 1][pBombArr[i].x] == '0')
-				Maze[pBombArr[i].y - 1][pBombArr[i].x] = '1';
 
-			// Move player to start point if hit by bomb
-			if (pPlayer->x == pBombArr[i].x && pPlayer->y == pBombArr[i].y - 1)
+		for (int j = 0; j < pPlayer->iBombPower; ++j)
+		{
+			if (pBombArr[i].y - j >= 0)
 			{
-				pPlayer->x = 0;
-				pPlayer->y = 0;
+				if (Maze[pBombArr[i].y - j][pBombArr[i].x] == '0')
+					Maze[pBombArr[i].y - j][pBombArr[i].x] = '1';
+
+				// Move player to start point if hit by bomb
+				if (pPlayer->tPos.x == pBombArr[i].x && pPlayer->tPos.y == pBombArr[i].y - j)
+				{
+					pPlayer->tPos.x = 0;
+					pPlayer->tPos.y = 0;
+				}
 			}
-		}
 
-		if (pBombArr[i].y + 1 < 20)
-		{
-			if (Maze[pBombArr[i].y + 1][pBombArr[i].x] == '0')
-				Maze[pBombArr[i].y + 1][pBombArr[i].x] = '1';
-
-			// Move player to start point if hit by bomb
-			if (pPlayer->tPos.x == pBombArr[i].x && pPlayer->tPos.y == pBombArr[i].y + 1)
+			if (pBombArr[i].y + j < 20)
 			{
-				pPlayer->tPos.x = 0;
-				pPlayer->tPos.y = 0;
+				if (Maze[pBombArr[i].y + j][pBombArr[i].x] == '0')
+					Maze[pBombArr[i].y + j][pBombArr[i].x] = '1';
+
+				// Move player to start point if hit by bomb
+				if (pPlayer->tPos.x == pBombArr[i].x && pPlayer->tPos.y == pBombArr[i].y + j)
+				{
+					pPlayer->tPos.x = 0;
+					pPlayer->tPos.y = 0;
+				}
 			}
-		}
 
-		if (pBombArr[i].x - 1 >= 0)
-		{
-			if (Maze[pBombArr[i].y][pBombArr[i].x - 1] == '0')
-				Maze[pBombArr[i].y][pBombArr[i].x - 1] = '1';
-
-			// Move player to start point if hit by bomb
-			if (pPlayer->x == pBombArr[i].x - 1 && pPlayer->y == pBombArr[i].y)
+			if (pBombArr[i].x - j >= 0)
 			{
-				pPlayer->x = 0;
-				pPlayer->y = 0;
+				if (Maze[pBombArr[i].y][pBombArr[i].x - j] == '0')
+					Maze[pBombArr[i].y][pBombArr[i].x - j] = '1';
+
+				// Move player to start point if hit by bomb
+				if (pPlayer->tPos.x == pBombArr[i].x - j && pPlayer->tPos.y == pBombArr[i].y)
+				{
+					pPlayer->tPos.x = 0;
+					pPlayer->tPos.y = 0;
+				}
 			}
-		}
 
-		if (pBombArr[i].x + 1 < 20)
-		{
-			if (Maze[pBombArr[i].y][pBombArr[i].x + 1] == '0')
-				Maze[pBombArr[i].y][pBombArr[i].x + 1] = '1';
-
-			// Move player to start point if hit by bomb
-			if (pPlayer->x == pBombArr[i].x + 1 && pPlayer->y == pBombArr[i].y)
+			if (pBombArr[i].x + j < 20)
 			{
-				pPlayer->x = 0;
-				pPlayer->y = 0;
+				if (Maze[pBombArr[i].y][pBombArr[i].x + j] == '0')
+					Maze[pBombArr[i].y][pBombArr[i].x + j] = '1';
+
+				// Move player to start point if hit by bomb
+				if (pPlayer->tPos.x == pBombArr[i].x + j && pPlayer->tPos.y == pBombArr[i].y)
+				{
+					pPlayer->tPos.x = 0;
+					pPlayer->tPos.y = 0;
+				}
 			}
 		}
 	}
