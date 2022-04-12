@@ -117,7 +117,9 @@ bool AddItem(char cItemType, PPLAYER pPlayer)
 {
 	if (cItemType == '5')
 	{
-		++pPlayer->iBombPower;
+		if (pPlayer->iBombPower < 5)
+			++pPlayer->iBombPower;
+
 		return true;
 	}
 
@@ -237,26 +239,29 @@ void MovePlayer(char Maze[21][21], PPLAYER pPlayer, char cInput)
 	}
 }
 
-void CreateBomb(char Maze[21][21], const PPOINT pPlayer,
+void CreateBomb(char Maze[21][21], const PPLAYER pPlayer,
 	PPOINT pBombArr, int* pBombCount)
 {
 	if (*pBombCount == 5)
 		return;
-	
+
+	else if (Maze[pPlayer->tPos.y][pPlayer->tPos.x] = '0')
+		return;
+
 	for (int i = 0; i < *pBombCount; ++i)
 	{
-		if (pPlayer->x == pBombArr[i].x &&
-			pPlayer->y == pBombArr[i].y)
+		if (pPlayer->tPos.x == pBombArr[i].x &&
+			pPlayer->tPos.y == pBombArr[i].y)
 			return;
 	}
 
-	pBombArr[*pBombCount] = *pPlayer;
+	pBombArr[*pBombCount] = pPlayer->tPos;
 	++(*pBombCount);
 
-	Maze[pPlayer->y][pPlayer->x] = '4';
+	Maze[pPlayer->tPos.y][pPlayer->tPos.x] = '4';
 }
 
-void Fire(char Maze[21][21], PPOINT pPlayer, PPOINT pBombArr,
+void Fire(char Maze[21][21], PPLAYER pPlayer, PPOINT pBombArr,
 	int* pBombCount)
 {
 	for (int i = 0; i < *pBombCount; ++i)
@@ -264,10 +269,10 @@ void Fire(char Maze[21][21], PPOINT pPlayer, PPOINT pBombArr,
 		Maze[pBombArr[i].y][pBombArr[i].x] = '1';
 
 		// Move player to start point if hit by bomb
-		if (pPlayer->x == pBombArr[i].x && pPlayer->y == pBombArr[i].y)
+		if (pPlayer->tPos.x == pBombArr[i].x && pPlayer->tPos.y == pBombArr[i].y)
 		{
-			pPlayer->x = 0;
-			pPlayer->y = 0;
+			pPlayer->tPos.x = 0;
+			pPlayer->tPos.y = 0;
 		}
 		if (pBombArr[i].y - 1 >= 0)
 		{
@@ -288,10 +293,10 @@ void Fire(char Maze[21][21], PPOINT pPlayer, PPOINT pBombArr,
 				Maze[pBombArr[i].y + 1][pBombArr[i].x] = '1';
 
 			// Move player to start point if hit by bomb
-			if (pPlayer->x == pBombArr[i].x && pPlayer->y == pBombArr[i].y + 1)
+			if (pPlayer->tPos.x == pBombArr[i].x && pPlayer->tPos.y == pBombArr[i].y + 1)
 			{
-				pPlayer->x = 0;
-				pPlayer->y = 0;
+				pPlayer->tPos.x = 0;
+				pPlayer->tPos.y = 0;
 			}
 		}
 
