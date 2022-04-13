@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <conio.h>
+#include <time.h>
 
 using namespace std;
 
@@ -92,6 +93,15 @@ void Output(char Maze[21][21], PPLAYER pPlayer)
 
 			else if (Maze[i][j] == '3')
 				cout << "◎";
+
+			else if (Maze[i][j] == '5')
+				cout << "֍";
+
+			else if (Maze[i][j] == '6')
+				cout << "▷";
+
+			else if (Maze[i][j] == '7')
+				cout << "※";
 		}
 
 		cout << endl;
@@ -275,12 +285,30 @@ void Fire(char Maze[21][21], PPLAYER pPlayer, PPOINT pBombArr,
 			pPlayer->tPos.y = 0;
 		}
 
-		for (int j = 0; j < pPlayer->iBombPower; ++j)
+		for (int j = 1; j <= pPlayer->iBombPower; ++j)
 		{
 			if (pBombArr[i].y - j >= 0)
 			{
 				if (Maze[pBombArr[i].y - j][pBombArr[i].x] == '0')
-					Maze[pBombArr[i].y - j][pBombArr[i].x] = '1';
+				{ 
+					// Item drop probability
+					if (rand() % 100 < 20)
+					{
+						int iPercent = rand() % 100;
+
+						if (rand() % 100 < 70)
+							Maze[pBombArr[i].y - j][pBombArr[i].x] = '5';
+
+						else if (iPercent < 80)
+							Maze[pBombArr[i].y - j][pBombArr[i].x] = '6';
+
+						else
+							Maze[pBombArr[i].y - j][pBombArr[i].x] = '7';
+					}
+
+					else
+						Maze[pBombArr[i].y - j][pBombArr[i].x] = '1';
+				}
 
 				// Move player to start point if hit by bomb
 				if (pPlayer->tPos.x == pBombArr[i].x && pPlayer->tPos.y == pBombArr[i].y - j)
@@ -293,7 +321,26 @@ void Fire(char Maze[21][21], PPLAYER pPlayer, PPOINT pBombArr,
 			if (pBombArr[i].y + j < 20)
 			{
 				if (Maze[pBombArr[i].y + j][pBombArr[i].x] == '0')
-					Maze[pBombArr[i].y + j][pBombArr[i].x] = '1';
+				{
+					// Item drop probability
+					if (rand() % 100 < 20)
+					{
+						int iPercent = rand() % 100;
+
+						if (rand() % 100 < 70)
+							Maze[pBombArr[i].y + j][pBombArr[i].x] = '5';
+
+						else if (iPercent < 80)
+							Maze[pBombArr[i].y + j][pBombArr[i].x] = '6';
+
+						else
+							Maze[pBombArr[i].y + j][pBombArr[i].x] = '7';
+					}
+
+					else
+
+						Maze[pBombArr[i].y + j][pBombArr[i].x] = '1';
+				}
 
 				// Move player to start point if hit by bomb
 				if (pPlayer->tPos.x == pBombArr[i].x && pPlayer->tPos.y == pBombArr[i].y + j)
@@ -306,8 +353,25 @@ void Fire(char Maze[21][21], PPLAYER pPlayer, PPOINT pBombArr,
 			if (pBombArr[i].x - j >= 0)
 			{
 				if (Maze[pBombArr[i].y][pBombArr[i].x - j] == '0')
-					Maze[pBombArr[i].y][pBombArr[i].x - j] = '1';
+				{
+					// Item drop probability
+					if (rand() % 100 < 20)
+					{
+						int iPercent = rand() % 100;
 
+						if (rand() % 100 < 70)
+							Maze[pBombArr[i].y][pBombArr[i].x - j] = '5';
+
+						else if (iPercent < 80)
+							Maze[pBombArr[i].y][pBombArr[i].x - j] = '6';
+
+						else
+							Maze[pBombArr[i].y][pBombArr[i].x - j] = '7';
+					}
+
+					else 
+						Maze[pBombArr[i].y][pBombArr[i].x - j] = '1';
+				}
 				// Move player to start point if hit by bomb
 				if (pPlayer->tPos.x == pBombArr[i].x - j && pPlayer->tPos.y == pBombArr[i].y)
 				{
@@ -319,8 +383,26 @@ void Fire(char Maze[21][21], PPLAYER pPlayer, PPOINT pBombArr,
 			if (pBombArr[i].x + j < 20)
 			{
 				if (Maze[pBombArr[i].y][pBombArr[i].x + j] == '0')
-					Maze[pBombArr[i].y][pBombArr[i].x + j] = '1';
+				{
+					// Item drop probability
+					if (rand() % 100 < 20)
+					{
+						int iPercent = rand() % 100;
 
+						if (rand() % 100 < 70)
+							Maze[pBombArr[i].y][pBombArr[i].x + j] = '5';
+
+						else if (iPercent < 80)
+							Maze[pBombArr[i].y][pBombArr[i].x + j] = '6';
+
+						else
+							Maze[pBombArr[i].y][pBombArr[i].x + j] = '7';
+					}
+
+					else
+
+						Maze[pBombArr[i].y][pBombArr[i].x + j] = '1';
+				}
 				// Move player to start point if hit by bomb
 				if (pPlayer->tPos.x == pBombArr[i].x + j && pPlayer->tPos.y == pBombArr[i].y)
 				{
@@ -336,6 +418,8 @@ void Fire(char Maze[21][21], PPLAYER pPlayer, PPOINT pBombArr,
 
 int main()
 {
+	srand((unsigned int)time(0));
+
 	// 20 X 20 maze
 	char strMaze[21][21];
 
