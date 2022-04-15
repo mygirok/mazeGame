@@ -30,6 +30,7 @@ typedef struct _tagPlayer
 {
 	_tagPoint	tPos;
 	bool		bWallPush;
+	bool		bPushOnOff;
 	bool		bTransparency;
 	int			iBombPower;
 }PLAYER, *PPLAYER;
@@ -135,13 +136,15 @@ bool AddItem(char cItemType, PPLAYER pPlayer)
 
 	else if (cItemType == '6')
 	{
-		++pPlayer->bWallPush = true;
+		pPlayer->bWallPush = true;
+		pPlayer->bPushOnOff = true;
+
 		return true;
 	}
 
 	else if (cItemType == '7')
 	{
-		++pPlayer->bTransparency = true;
+		pPlayer->bTransparency = true;
 		return true;
 	}
 
@@ -448,7 +451,7 @@ int main()
 			break;
 		}
 
-		cout << "t : set bomb, u : bomb attak, i : push wall" << endl;
+		cout << "t : set bomb, u : bomb attak, i : push wall ON/OFF" << endl;
 		cout << "w : up, s : down, a : left, d : right, q : quit ";
 		char cInput = _getch();
 
@@ -461,6 +464,12 @@ int main()
 		else if (cInput == 'u' || cInput == 'U')
 		{
 			Fire(strMaze, &tPlayer, tBombPos, &iBombCount);
+		}
+
+		else if (cInput == 'i' || cInput == 'I')
+		{
+			if (tPlayer.bWallPush)
+				tPlayer.bPushOnOff = !tPlayer.bPushOnOff;
 		}
 
 		else
